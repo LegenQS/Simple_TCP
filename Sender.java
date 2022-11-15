@@ -94,6 +94,8 @@ public class Sender implements Callable {
         }
     }
 
+    public DatagramSocket getSocket() {return this.socket;}
+
     public boolean isTimeout(long s) {
         if (sent_time == 0) return false;
         return s - sent_time >= RTT ? true : false;

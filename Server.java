@@ -19,9 +19,9 @@ public class Server {
 
     public static void main(String[] args)  {
         int port = 41191, receive_port = 41194;
-        String file_name = "src/TCP_IP/java/test.txt";
+        String file_name = "src/UDP/test.txt";
         OutputStream out = null;
-        byte[] receive_data = new byte[1024];
+        byte[] receive_data = new byte[576];
 
         // static data loaded from local file
         Data data = loadData(file_name);
@@ -31,11 +31,17 @@ public class Server {
             return;
         }
 
-        Reader read = new Reader(receive_port, "src/UDP/server.txt", readed, sent);
+        Reader read = new Reader(receive_port, "src/UDP/server_test.txt", readed, sent);
         Sender send = new Sender(port, readed, sent);
 //        System.out.println(data.getLength());
-        executor.submit(read);
+
         int i = -1;
+        try {
+            read.getSocket().receive(new DatagramPacket(receive_data, receive_data.length));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        executor.submit(read);
         while (i < data.getLength() && !read.isEnd()) {
 
             // send next available package

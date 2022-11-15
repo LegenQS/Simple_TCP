@@ -12,14 +12,19 @@ public class Client {
     private static ExecutorService executor = Executors.newFixedThreadPool(10);
     private static Set<Integer> readed = Collections.synchronizedSet(new HashSet<>());
     private static Set<Integer> sent = Collections.synchronizedSet(new HashSet<>());
-
     public static void main(String[] args) {
         int port = 41191, send_port = 41194;
-        byte[] data = new byte[1024];
+        byte[] data = new byte[576];
 
         int cnt = 0;
-        Reader read = new Reader(port, "src/UDP/client.txt", readed, sent);
+        Reader read = new Reader(port, "src/UDP/client_test.txt", readed, sent);
         Sender send = new Sender(send_port, readed, sent);
+
+        try {
+            read.getSocket().send(new DatagramPacket(data, data.length, InetAddress.getLocalHost(), send_port));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         executor.submit(read);
         int last_received = 0;
         while (true) {

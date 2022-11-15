@@ -109,6 +109,7 @@ public class Reader implements Callable {
 
     public int getNext_ack() {return next_ack;}
 
+    public DatagramSocket getSocket() {return this.socket;}
     public boolean getFIN(TCPPackage message) {
         if (message.getFIN() == 1) return true;
         return false;
